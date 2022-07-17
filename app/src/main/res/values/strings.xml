@@ -8,5 +8,5 @@
     <string name="add">Add</string>
     <string name="coordinates">Coordinates</string>
     <string name="coordinate">Coordinate</string>
-    <string name="coordinate_error">Please enter 1/%s value</string>
+    <string name="coordinate_error">Please enter %s value</string>
 </resources>
