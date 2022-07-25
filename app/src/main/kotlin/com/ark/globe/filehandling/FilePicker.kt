@@ -2,16 +2,13 @@ package com.ark.globe.filehandling
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.ark.globe.BuildConfig
@@ -24,7 +21,7 @@ class FilePicker private constructor(){
     companion object{
 
         private const val TAG = "file_picker"
-        private const val SDK_R_READ_PERMISSIONS_CODE = 0
+        var readPermLauncherSDK_R: ActivityResultLauncher<Uri>? = null
         var readPermLauncher: ActivityResultLauncher<String>? = null
 
         fun show(fragmentManager: FragmentManager) {
@@ -35,7 +32,7 @@ class FilePicker private constructor(){
             if(isReadPermissionGranted(activity)){
                 show(fragmentManager)
             }
-            else askForReadPermissions(activity)
+            else askForReadPermissions()
         }
 
         fun isReadPermissionGranted(activity: AppCompatActivity): Boolean{
@@ -47,11 +44,10 @@ class FilePicker private constructor(){
             }
         }
 
-        private fun askForReadPermissions(activity: AppCompatActivity){
+        private fun askForReadPermissions(){
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
                 val packageUri = Uri.parse("package:" + BuildConfig.APPLICATION_ID)
-                val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION, packageUri)
-                activity.startActivityForResult(intent, SDK_R_READ_PERMISSIONS_CODE)
+                readPermLauncherSDK_R?.launch(packageUri)
             }
             else{
                 readPermLauncher?.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
