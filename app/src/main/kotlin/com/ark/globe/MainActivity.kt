@@ -44,7 +44,8 @@ class MainActivity: AppCompatActivity() {
             onBackPressed()
         }
 
-        FilePicker.show(this, supportFragmentManager)
+        if(GlobePreferences.getInstance(this).getPath() == null)
+            FilePicker.show(this, supportFragmentManager)
 
         locationsFragment.sendIntent(intent)
 
