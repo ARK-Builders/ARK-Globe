@@ -24,8 +24,7 @@ class FilePicker private constructor(){
     companion object{
 
         private const val TAG = "file_picker"
-        const val SDK_R_READ_PERMISSIONS_CODE = 0
-        var readPermLauncherSDK_R: ActivityResultLauncher<Uri>? = null
+        private const val SDK_R_READ_PERMISSIONS_CODE = 0
         var readPermLauncher: ActivityResultLauncher<String>? = null
 
         fun show(fragmentManager: FragmentManager) {

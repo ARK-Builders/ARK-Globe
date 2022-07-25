@@ -1,7 +1,10 @@
 package com.ark.globe.coordinates
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import java.net.HttpURLConnection
+import java.net.URL
 
 class URLParser {
     companion object{

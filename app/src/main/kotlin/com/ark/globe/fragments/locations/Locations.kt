@@ -39,7 +39,9 @@ class Locations: Fragment() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             if (intent == null && s != null && s.isNotEmpty()) {
                 val url = getValidURL(s.toString())
-                lViewModel.writeCoordinates(runBlocking { URLParser.extractCoordinates(url) })
+                lViewModel.writeCoordinates(runBlocking {
+                    URLParser.extractCoordinates(url)
+                })
                 onCoordinatesChanged()
             }
         }
