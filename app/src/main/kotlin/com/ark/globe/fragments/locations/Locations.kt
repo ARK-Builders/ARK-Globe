@@ -10,29 +10,22 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ark.globe.R
 import com.ark.globe.adapters.LocationsAdapter
-import com.ark.globe.contracts.FileAccessContract
 import com.ark.globe.coordinates.Coordinates
 import com.ark.globe.coordinates.Location
 import com.ark.globe.coordinates.Locations
 import com.ark.globe.coordinates.URLParser
 import com.ark.globe.coordinates.URLParser.Companion.getValidURL
-import com.ark.globe.filehandling.FilePicker
-import com.ark.globe.filehandling.FilePicker.Companion.readPermLauncher
-import com.ark.globe.filehandling.FilePicker.Companion.readPermLauncherSDK_R
 import com.ark.globe.jsonprocess.JSONFile
 import com.ark.globe.jsonprocess.JSONParser
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.runBlocking
-import space.taran.arkfilepicker.*
 
 class Locations: Fragment() {
 
@@ -82,6 +75,7 @@ class Locations: Fragment() {
         if(intent != null) {
             val urlString = intent?.getStringExtra(Intent.EXTRA_TEXT)
             lViewModel.apply {
+                println(intent?.getStringExtra(Intent.EXTRA_TEXT))
                 coordinatesURL.value = getValidURL(urlString)
                 coordinatesURL.observe(viewLifecycleOwner) { url ->
                     writeCoordinates(runBlocking {
