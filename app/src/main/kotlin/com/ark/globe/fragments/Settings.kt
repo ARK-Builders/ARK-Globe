@@ -2,13 +2,11 @@ package com.ark.globe.fragments
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.ark.globe.R
-import com.ark.globe.contracts.FileAccessContract
 import com.ark.globe.filehandling.FilePicker
 import com.ark.globe.fragments.ui.PathPreference
 import com.ark.globe.preferences.GlobePreferences
@@ -18,22 +16,6 @@ class Settings : PreferenceFragmentCompat() {
 
     private val activity: AppCompatActivity by lazy {
         requireActivity() as AppCompatActivity
-    }
-
-    init{
-        FilePicker.readPermLauncherSDK_R = registerForActivityResult(FileAccessContract()){
-            if(FilePicker.isReadPermissionGranted(requireActivity() as AppCompatActivity)){
-                FilePicker.show(parentFragmentManager)
-            }
-            else FilePicker.permissionDeniedError(requireActivity() as AppCompatActivity)
-        }
-
-        FilePicker.readPermLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
-            if(isGranted){
-                FilePicker.show(parentFragmentManager)
-            }
-            else FilePicker.permissionDeniedError(requireActivity() as AppCompatActivity)
-        }
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -73,6 +55,6 @@ class Settings : PreferenceFragmentCompat() {
 
     companion object{
         const val TAG = "Settings"
-        private const val FOLDER_NAME = "/My Locations"
+        const val FOLDER_NAME = "/My Locations"
     }
 }
