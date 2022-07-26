@@ -2,10 +2,12 @@ package com.ark.globe.filehandling
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +23,7 @@ class FilePicker private constructor(){
     companion object{
 
         private const val TAG = "file_picker"
-        var readPermLauncherSDK_R: ActivityResultLauncher<Uri>? = null
+        private const val SDK_R_READ_PERMISSIONS_CODE = 0
         var readPermLauncher: ActivityResultLauncher<String>? = null
 
         fun show(fragmentManager: FragmentManager) {
@@ -32,10 +34,10 @@ class FilePicker private constructor(){
             if(isReadPermissionGranted(activity)){
                 show(fragmentManager)
             }
-            else askForReadPermissions()
+            else askForReadPermissions(activity)
         }
 
-        fun isReadPermissionGranted(activity: AppCompatActivity): Boolean{
+        private fun isReadPermissionGranted(activity: AppCompatActivity): Boolean{
             return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
                 Environment.isExternalStorageManager()
             else{
@@ -44,10 +46,11 @@ class FilePicker private constructor(){
             }
         }
 
-        private fun askForReadPermissions(){
+        private fun askForReadPermissions(activity: AppCompatActivity){
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
                 val packageUri = Uri.parse("package:" + BuildConfig.APPLICATION_ID)
-                readPermLauncherSDK_R?.launch(packageUri)
+                val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION, packageUri)
+                activity.startActivityForResult(intent, SDK_R_READ_PERMISSIONS_CODE)
             }
             else{
                 readPermLauncher?.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)

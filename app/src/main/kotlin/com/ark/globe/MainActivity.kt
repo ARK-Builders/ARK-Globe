@@ -3,17 +3,32 @@ package com.ark.globe
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.ark.globe.databinding.ActivityMainBinding
+import com.ark.globe.filehandling.FilePicker
 import com.ark.globe.fragments.Settings
 import com.ark.globe.fragments.locations.Locations
 import com.ark.globe.preferences.GlobePreferences
+import space.taran.arkfilepicker.onArkPathPicked
 
 class MainActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val locationsFragment = Locations()
     private val settingsFragment = Settings()
+
+    init{
+        FilePicker.readPermLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
+            if(isGranted){
+                FilePicker.show(supportFragmentManager)
+            }
+            else{
+                FilePicker.permissionDeniedError(this)
+                this.finish()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -27,11 +42,19 @@ class MainActivity: AppCompatActivity() {
 
         locationsFragment.sendIntent(intent)
 
+        if(GlobePreferences.getInstance(this).getPath() == null)
+            FilePicker.show(this, supportFragmentManager)
+
         if(savedInstanceState == null){
             supportFragmentManager.beginTransaction().apply {
                 add(R.id.container, locationsFragment, Locations.TAG)
                 commit()
             }
+        }
+
+        supportFragmentManager.onArkPathPicked(this) {
+            val globePrefs = GlobePreferences.getInstance(this)
+            globePrefs.storePath("$it${Settings.FOLDER_NAME}")
         }
     }
 
