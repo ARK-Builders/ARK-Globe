@@ -21,7 +21,7 @@ class MainActivity: AppCompatActivity() {
     init{
         FilePicker.readPermLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
             if(isGranted){
-                FilePicker.show(supportFragmentManager)
+                FilePicker.show()
             }
             else{
                 FilePicker.permissionDeniedError(this)

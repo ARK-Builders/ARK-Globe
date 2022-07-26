@@ -24,15 +24,17 @@ class FilePicker private constructor(){
 
         private const val TAG = "file_picker"
         private const val SDK_R_READ_PERMISSIONS_CODE = 0
+        private var fragmentManager: FragmentManager? = null
         var readPermLauncher: ActivityResultLauncher<String>? = null
 
-        fun show(fragmentManager: FragmentManager) {
-            ArkFilePickerFragment.newInstance(getFilePickerConfig()).show(fragmentManager, TAG)
+        fun show() {
+            ArkFilePickerFragment.newInstance(getFilePickerConfig()).show(fragmentManager!!, TAG)
         }
 
         fun show(activity: AppCompatActivity, fragmentManager: FragmentManager){
+            this.fragmentManager = fragmentManager
             if(isReadPermissionGranted(activity)){
-                show(fragmentManager)
+                show()
             }
             else askForReadPermissions(activity)
         }
@@ -51,6 +53,13 @@ class FilePicker private constructor(){
                 val packageUri = Uri.parse("package:" + BuildConfig.APPLICATION_ID)
                 val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION, packageUri)
                 activity.startActivityForResult(intent, SDK_R_READ_PERMISSIONS_CODE)
+                if(isReadPermissionGranted(activity))
+                    show()
+                else{
+                    permissionDeniedError(activity)
+                    activity.finish()
+                }
+
             }
             else{
                 readPermLauncher?.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
