@@ -32,4 +32,7 @@
     <string name="select_folder">Please select folder to save locations from settings</string>
     <string name="no_locations">No locations to save</string>
     <string name="location_saved">Location(s) saved successfully</string>
+    <string name="crash_dialog_desc">Sorry, the application crashed. Please send a report to the developers.</string>
+    <string name="crash_dialog_title">Crash</string>
+    <string name="crash_dialog_comment">You can add a comment here:</string>
 </resources>

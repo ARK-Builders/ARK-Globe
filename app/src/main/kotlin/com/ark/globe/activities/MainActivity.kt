@@ -1,10 +1,12 @@
-package com.ark.globe
+package com.ark.globe.activities
 
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.ark.globe.R
+import com.ark.globe.contracts.PermissionContract
 import com.ark.globe.databinding.ActivityMainBinding
 import com.ark.globe.filehandling.FilePicker
 import com.ark.globe.fragments.Settings
@@ -19,13 +21,22 @@ class MainActivity: AppCompatActivity() {
     private val settingsFragment = Settings()
 
     init{
+        FilePicker.readPermLauncher_SDK_R = registerForActivityResult(PermissionContract()){
+            if(FilePicker.isReadPermissionGranted(this))
+                FilePicker.show()
+            else{
+                FilePicker.permissionDeniedError(this)
+                finish()
+            }
+        }
+
         FilePicker.readPermLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
             if(isGranted){
                 FilePicker.show()
             }
             else{
                 FilePicker.permissionDeniedError(this)
-                this.finish()
+                finish()
             }
         }
     }

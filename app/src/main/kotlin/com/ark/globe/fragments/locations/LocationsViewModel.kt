@@ -1,9 +1,15 @@
 package com.ark.globe.fragments.locations
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ark.globe.coordinates.Coordinates
 import com.ark.globe.coordinates.Location
+import com.ark.globe.coordinates.URLParser
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LocationsViewModel: ViewModel() {
 
@@ -61,4 +67,12 @@ class LocationsViewModel: ViewModel() {
     fun getCoordinatesList() = coordinateList
 
     fun getLocations() = locationList
+
+    fun getFullUrl(url: String?){
+        viewModelScope.launch{
+            withContext(Dispatchers.IO){
+                URLParser.connect(url)
+            }
+        }
+    }
 }

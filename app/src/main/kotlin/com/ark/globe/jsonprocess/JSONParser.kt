@@ -3,6 +3,7 @@ package com.ark.globe.jsonprocess
 import com.ark.globe.coordinates.Location
 import com.ark.globe.coordinates.Locations
 import com.google.gson.Gson
+import java.util.Scanner
 
 class JSONParser {
     companion object {

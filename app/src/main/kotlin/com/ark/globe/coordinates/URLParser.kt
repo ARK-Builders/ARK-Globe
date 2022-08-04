@@ -1,7 +1,9 @@
 package com.ark.globe.coordinates
 
+import android.content.Context
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
@@ -10,6 +12,7 @@ class URLParser {
     companion object{
         private const val GOOGLE_MAPS = "maps.google.com"
         private const val OPENSTREETMAP = "www.openstreetmap.org"
+        private const val OSM_AND_NET = "osmand.net"
         private const val URL_PROTOCOL_1 = "http"
         private const val URL_PROTOCOL_2 = "https"
 
@@ -32,6 +35,13 @@ class URLParser {
                     longitude = coordinatesString.substringAfter("/")
                 }
 
+                if(url != null && url.contains(OSM_AND_NET)) {
+                    //osmand.net link processing
+                    val coordinateString = url.substringAfter("lat=").substringBefore("&z")
+                    latitude = coordinateString.substringBefore("&lon=")
+                    longitude = coordinateString.substringAfter("&lon=")
+                }
+
                 if (latitude?.toDoubleOrNull() != null && longitude?.toDoubleOrNull() != null)
                     Coordinates(latitude.toDouble(), longitude.toDouble())
                 else
@@ -50,6 +60,22 @@ class URLParser {
                 else null
             }
             else null
+        }
+
+        fun connect( urlStr: String?){
+            var conn: HttpURLConnection? = null
+            try{
+                val url = URL(urlStr)
+                conn = url.openConnection() as HttpURLConnection
+                println("Header 0: ${conn.getHeaderField(0)}")
+            }
+
+            catch (e: Exception){
+                e.printStackTrace()
+            }
+            finally {
+                conn?.disconnect()
+            }
         }
     }
 }

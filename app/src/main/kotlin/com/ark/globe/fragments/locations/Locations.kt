@@ -1,6 +1,7 @@
 package com.ark.globe.fragments.locations
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,6 +16,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.ark.globe.R
 import com.ark.globe.adapters.LocationsAdapter
 import com.ark.globe.coordinates.Coordinates
@@ -25,20 +29,25 @@ import com.ark.globe.coordinates.URLParser.Companion.getValidURL
 import com.ark.globe.jsonprocess.JSONFile
 import com.ark.globe.jsonprocess.JSONParser
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class Locations: Fragment() {
 
     private val lViewModel: LocationsViewModel by viewModels()
     private var adapter: LocationsAdapter? = null
     private var intent: Intent? = null
-    var longitude: EditText? = null
-    var latitude: EditText? = null
+    private var longitude: EditText? = null
+    private var latitude: EditText? = null
 
     private val urlChangeListener = object : TextWatcher {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             if (intent == null && s != null && s.isNotEmpty()) {
                 val url = getValidURL(s.toString())
+                //lViewModel.getFullUrl(url)
                 lViewModel.writeCoordinates(runBlocking {
                     URLParser.extractCoordinates(url)
                 })

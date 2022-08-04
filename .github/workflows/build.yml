@@ -5,6 +5,11 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: Development
+    env:
+      ACRA_LOGIN: ${{ secrets.ACRAIUM_BASIC_AUTH_LOGIN }}
+      ACRA_PASS: ${{ secrets.ACRARIUM_BASIC_AUTH_PASSWORD }}
+      ACRA_URI: ${{ secrets.ACRAIUM_URI }}
     steps:
     - uses: actions/checkout@v2
     
@@ -16,10 +21,7 @@ jobs:
     
     - name: Build Debug APK
       run: ./gradlew assembleDebug
-      
-    - name: Build Debug APK
-      run: ./gradlew assembleDebug
-      
+
     - name: Upload Debug APK
       uses: actions/upload-artifact@v2
       with:
