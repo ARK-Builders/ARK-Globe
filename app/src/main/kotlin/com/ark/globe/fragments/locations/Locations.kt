@@ -1,7 +1,6 @@
 package com.ark.globe.fragments.locations
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,24 +15,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.RequestQueue
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.ark.globe.R
 import com.ark.globe.adapters.LocationsAdapter
 import com.ark.globe.coordinates.Coordinates
 import com.ark.globe.coordinates.Location
 import com.ark.globe.coordinates.Locations
 import com.ark.globe.coordinates.URLParser
-import com.ark.globe.coordinates.URLParser.Companion.getValidURL
 import com.ark.globe.jsonprocess.JSONFile
 import com.ark.globe.jsonprocess.JSONParser
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 class Locations: Fragment() {
 
@@ -46,11 +37,12 @@ class Locations: Fragment() {
     private val urlChangeListener = object : TextWatcher {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             if (intent == null && s != null && s.isNotEmpty()) {
-                val url = getValidURL(s.toString())
-                //lViewModel.getFullUrl(url)
-                lViewModel.writeCoordinates(runBlocking {
-                    URLParser.extractCoordinates(url)
-                })
+                val coordinates = runBlocking{
+                    URLParser.extractCoordinates(s.toString())
+                }
+                lViewModel.writeCoordinates(coordinates)
+                println("ViewModel Latitude: ${coordinates?.latitude}")
+                println("ViewModel Longitude: ${coordinates?.longitude}")
                 onCoordinatesChanged()
             }
         }
@@ -87,11 +79,13 @@ class Locations: Fragment() {
             val urlString = intent?.getStringExtra(Intent.EXTRA_TEXT)
             lViewModel.apply {
                 println(intent?.getStringExtra(Intent.EXTRA_TEXT))
-                coordinatesURL.value = getValidURL(urlString)
+                setCoordinatesUrl(urlString)
                 coordinatesURL.observe(viewLifecycleOwner) { url ->
-                    writeCoordinates(runBlocking {
-                        URLParser.extractCoordinates(url)
-                    })
+                    writeCoordinates(
+                        runBlocking {
+                            URLParser.extractCoordinates(url)
+                        }
+                    )
                     urlText.setText(url)
                 }
             }

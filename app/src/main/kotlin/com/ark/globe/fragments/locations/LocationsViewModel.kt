@@ -1,15 +1,10 @@
 package com.ark.globe.fragments.locations
 
-import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.ark.globe.coordinates.Coordinates
 import com.ark.globe.coordinates.Location
-import com.ark.globe.coordinates.URLParser
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LocationsViewModel: ViewModel() {
 
@@ -27,19 +22,20 @@ class LocationsViewModel: ViewModel() {
         }
     }
 
-    val coordinates:
+    private val _coordinates:
             MutableLiveData<Coordinates> by lazy {
         MutableLiveData<Coordinates>().also{
             it.value = Coordinates()
         }
     }
+    val coordinates: LiveData<Coordinates> = _coordinates
 
-    val coordinatesURL = MutableLiveData<String>()
+    private val _coordinatesURL = MutableLiveData<String>()
+    val coordinatesURL: LiveData<String> = _coordinatesURL
 
     fun writeCoordinates(coordinates: Coordinates?) {
         if (coordinates != null) {
-            this.coordinates.value?.latitude = coordinates.latitude
-            this.coordinates.value?.longitude = coordinates.longitude
+            _coordinates.value = coordinates
         }
     }
 
@@ -52,6 +48,10 @@ class LocationsViewModel: ViewModel() {
     fun addLocation(location: Location){
         locationList.value?.add(location)
         addLocations(locationList.value!!)
+    }
+
+    fun setCoordinatesUrl(url: String?){
+        _coordinatesURL.postValue(url)
     }
 
     fun addCoordinates(coordinates: Coordinates){
@@ -67,12 +67,4 @@ class LocationsViewModel: ViewModel() {
     fun getCoordinatesList() = coordinateList
 
     fun getLocations() = locationList
-
-    fun getFullUrl(url: String?){
-        viewModelScope.launch{
-            withContext(Dispatchers.IO){
-                URLParser.connect(url)
-            }
-        }
-    }
 }
