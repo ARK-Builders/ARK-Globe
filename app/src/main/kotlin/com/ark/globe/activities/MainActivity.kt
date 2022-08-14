@@ -10,14 +10,14 @@ import com.ark.globe.contracts.PermissionContract
 import com.ark.globe.databinding.ActivityMainBinding
 import com.ark.globe.filehandling.FilePicker
 import com.ark.globe.fragments.Settings
-import com.ark.globe.fragments.locations.Locations
+import com.ark.globe.fragments.locations.LocationsFragment
 import com.ark.globe.preferences.GlobePreferences
 import space.taran.arkfilepicker.onArkPathPicked
 
 class MainActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val locationsFragment = Locations()
+    private val locationsFragment = LocationsFragment()
     private val settingsFragment = Settings()
 
     init{
@@ -58,7 +58,7 @@ class MainActivity: AppCompatActivity() {
 
         if(savedInstanceState == null){
             supportFragmentManager.beginTransaction().apply {
-                add(R.id.container, locationsFragment, Locations.TAG)
+                add(R.id.container, locationsFragment, LocationsFragment.TAG)
                 commit()
             }
         }

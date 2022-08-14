@@ -21,34 +21,39 @@ import com.ark.globe.coordinates.Coordinates
 import com.ark.globe.coordinates.Location
 import com.ark.globe.coordinates.Locations
 import com.ark.globe.coordinates.URLParser
+import com.ark.globe.databinding.LocationsFragmentBinding
 import com.ark.globe.jsonprocess.JSONFile
 import com.ark.globe.jsonprocess.JSONParser
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.runBlocking
 
-class Locations: Fragment() {
+class LocationsFragment: Fragment() {
 
+    private val activity: AppCompatActivity by lazy{
+        requireActivity() as AppCompatActivity
+    }
     private val lViewModel: LocationsViewModel by viewModels()
     private var adapter: LocationsAdapter? = null
     private var intent: Intent? = null
     private var longitude: EditText? = null
     private var latitude: EditText? = null
 
+    private lateinit var binding: LocationsFragmentBinding
+
     private val urlChangeListener = object : TextWatcher {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            if (intent == null && s != null && s.isNotEmpty()) {
+            if (s != null && s.isNotEmpty()) {
                 val coordinates = runBlocking{
                     URLParser.extractCoordinates(s.toString())
                 }
+
                 lViewModel.writeCoordinates(coordinates)
-                println("ViewModel Latitude: ${coordinates?.latitude}")
-                println("ViewModel Longitude: ${coordinates?.longitude}")
+
                 onCoordinatesChanged()
             }
         }
 
-        override fun afterTextChanged(s: Editable?){
-        }
+        override fun afterTextChanged(s: Editable?) = Unit
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
     }
@@ -58,9 +63,11 @@ class Locations: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        return inflater.inflate(R.layout.manual_entry, container, false)
+        savedInstanceState: Bundle?): View {
+        activity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        activity.title = getString(R.string.app_name)
+        binding = LocationsFragmentBinding.inflate(layoutInflater)
+        return inflater.inflate(R.layout.locations_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,21 +82,11 @@ class Locations: Fragment() {
         longitude = view.findViewById(R.id.longitude)
         latitude = view.findViewById(R.id.latitude)
 
+        urlText.addTextChangedListener(urlChangeListener)
+
         if(intent != null) {
-            val urlString = intent?.getStringExtra(Intent.EXTRA_TEXT)
-            lViewModel.apply {
-                println(intent?.getStringExtra(Intent.EXTRA_TEXT))
-                setCoordinatesUrl(urlString)
-                coordinatesURL.observe(viewLifecycleOwner) { url ->
-                    writeCoordinates(
-                        runBlocking {
-                            URLParser.extractCoordinates(url)
-                        }
-                    )
-                    urlText.setText(url)
-                }
-            }
-            intent = null
+            val data = intent?.getStringExtra(Intent.EXTRA_TEXT)
+            urlText.setText(URLParser.getValidURL(data))
         }
 
         lViewModel.apply {
@@ -97,7 +94,7 @@ class Locations: Fragment() {
                 adapter = LocationsAdapter(it)
                 recyclerView.apply {
                     this.layoutManager = layoutManager
-                    this.adapter = this@Locations.adapter
+                    this.adapter = this@LocationsFragment.adapter
                 }
             }
             onCoordinatesChanged()
@@ -165,8 +162,6 @@ class Locations: Fragment() {
                 }
             }
         }
-
-        urlText.addTextChangedListener(urlChangeListener)
     }
 
     private fun onCoordinatesChanged(){
@@ -187,6 +182,6 @@ class Locations: Fragment() {
     }
 
     companion object {
-        const val TAG = "Manual Entry"
+        const val TAG = "Locations Fragment"
     }
 }

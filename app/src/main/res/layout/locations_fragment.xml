@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <include
+        android:id="@+id/container"
         layout="@layout/location_input"
         android:layout_width="0dp"
         android:layout_height="0dp"

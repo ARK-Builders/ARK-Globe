@@ -30,9 +30,6 @@ class LocationsViewModel: ViewModel() {
     }
     val coordinates: LiveData<Coordinates> = _coordinates
 
-    private val _coordinatesURL = MutableLiveData<String>()
-    val coordinatesURL: LiveData<String> = _coordinatesURL
-
     fun writeCoordinates(coordinates: Coordinates?) {
         if (coordinates != null) {
             _coordinates.value = coordinates
@@ -48,10 +45,6 @@ class LocationsViewModel: ViewModel() {
     fun addLocation(location: Location){
         locationList.value?.add(location)
         addLocations(locationList.value!!)
-    }
-
-    fun setCoordinatesUrl(url: String?){
-        _coordinatesURL.postValue(url)
     }
 
     fun addCoordinates(coordinates: Coordinates){
