@@ -1,6 +1,7 @@
 package com.ark.globe.coordinates
 
 import android.net.Uri
+import com.ark.globe.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -29,6 +30,8 @@ class URLParser {
             var coordinates: Coordinates? = null
             val validUrl = getValidURL(url)
             println("Valid URL: $validUrl")
+            latitude = null
+            longitude = null
             withContext(ioDispatcher) {
                 if(validUrl != null && (validUrl.contains(GOOGLE_MAPS) || validUrl.contains(GOOGLE_MAPS_SHORT)))
                     parseGoogleMapsLinks(validUrl)
@@ -52,16 +55,19 @@ class URLParser {
         }
 
         private fun parseGoogleMapsLinks(url: String?){
-            if(url != null && url.contains(GOOGLE_MAPS)) {
-                val uri = Uri.parse(url)
-                val coordinates = uri.getQueryParameter("q")
-                val coords = coordinates?.split(",")
-                latitude = coords?.get(0)
-                longitude = coords?.get(1)
-            }
-            else {
-                loadUrl(url)
-            }
+           if(url != null) {
+               if (url.contains(GOOGLE_MAPS)) {
+                   val uri = Uri.parse(url)
+                   val coordinates = uri.getQueryParameter("q")
+                   val coords = coordinates?.split(",")
+                   if(coords != null) {
+                       latitude = coords[0]
+                       longitude = coords[1]
+                   }
+               } else {
+                   loadUrl(url)
+               }
+           }
         }
 
         private fun parseOpenStreetMapLinks(url: String?){
@@ -102,27 +108,44 @@ class URLParser {
             val request: Request
             var response: okhttp3.Response? = null
             if(url != null) {
-                client = OkHttpClient()
+                client = OkHttpClient.Builder()
+                    .addNetworkInterceptor{
+                        it.proceed(
+                            it.request()
+                                .newBuilder()
+                                .header("User-agent", BuildConfig.APPLICATION_ID)
+                                .build()
+                        )
+                    }
+                    .build()
                 request = Request.Builder()
                     .url(url)
                     .build()
                 try {
                     response = client.newCall(request).execute()
+
                     val bReader = BufferedReader(response.body?.charStream())
                     val status = response.code
-                    val actualUrl = response.request.url.toString()
+                    var actualUrl = ""
                     println("Status: $status")
-                    println("URL: $actualUrl")
-                    var isNotParsed = false
-                    if (status == HTTP_OK)
+                    var isParsed = false
+                    if (status == HTTP_OK) {
+                        actualUrl = response.request.url.toString()
+                        println("URL: $actualUrl")
                         bReader.forEachLine {
                             //println("Line: $it")
-                            isNotParsed = parseGoogleCoordinates(it)
-                            if(!isNotParsed)
+                            if (it.contains("/@"))
+                                println("Redirect: ${it.substringAfter("/@")}")
+                            isParsed = parseGoogleCoordinates(it)
+                            if (isParsed) {
+                                println("Is Parsed: $isParsed")
                                 return@forEachLine
+                            }
                         }
-
-                    if(isNotParsed) {
+                    }
+//  https://maps.app.goo.gl/XTudbauXz5ZdfXAWA
+//  https://www.google.com/maps?q=Google+Building+1600,+1600+Plymouth+St,+Mountain+View,+CA+94043,+USA&ftid=0x808fba002c047109:0x8a6e9df8c478269&hl=en&gl=us&g_ep=GAA%3D&shorturl=1https://www.google.com/maps?q=Google+Building+1600,+1600+Plymouth+St,+Mountain+View,+CA+94043,+USA&ftid=0x808fba002c047109:0x8a6e9df8c478269&hl=en&gl=us&g_ep=GAA%3D&shorturl=1https://www.google.com/maps?q=Google+Building+1600,+1600+Plymouth+St,+Mountain+View,+CA+94043,+USA&ftid=0x808fba002c047109:0x8a6e9df8c478269&hl=en&gl=us&g_ep=GAA%3D&shorturl=1
+                    if(isParsed) {
                         println("Is not parsed...")
                         if (actualUrl.contains(GOOGLE_MAPS)) {
                             parseGoogleMapsLinks(actualUrl)

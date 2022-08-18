@@ -17,5 +17,9 @@ class JSONParser {
         fun parseLocationsToJSON(locations: Locations): String{
             return gson.toJson(locations, Locations::class.java)
         }
+
+        fun parseFromJsonToLocation(string: String): Location{
+            return gson.fromJson(string, Location::class.java)
+        }
     }
 }

@@ -8,19 +8,14 @@ import com.ark.globe.coordinates.Location
 
 class LocationsViewModel: ViewModel() {
 
-    private val coordinateList:
-        MutableLiveData<MutableList<Coordinates>> by lazy{
-            MutableLiveData<MutableList<Coordinates>>().also{
-                it.value = mutableListOf()
-            }
-    }
-
-    private val locationList:
-            MutableLiveData<MutableList<Location>> by lazy{
-        MutableLiveData<MutableList<Location>>().also{
-            it.value = mutableListOf()
+    private val locationsList = mutableListOf<Location>()
+    private val _locations:
+            MutableLiveData<List<Location>> by lazy{
+        MutableLiveData<List<Location>>().also{
+            it.value = listOf()
         }
     }
+    val locations: LiveData<List<Location>> = _locations
 
     private val _coordinates:
             MutableLiveData<Coordinates> by lazy {
@@ -28,36 +23,21 @@ class LocationsViewModel: ViewModel() {
             it.value = Coordinates()
         }
     }
+
     val coordinates: LiveData<Coordinates> = _coordinates
 
     fun writeCoordinates(coordinates: Coordinates?) {
-        if (coordinates != null) {
-            _coordinates.value = coordinates
-        }
+        _coordinates.value = coordinates
     }
 
-    private fun addLocations(locations: List<Location>){
-        if(locations.isNotEmpty()){
-            locationList.value = locations as MutableList<Location>?
-        }
+    fun addLocations(locations: List<Location>){
+        locationsList.addAll(locations)
+        _locations.value = locationsList
     }
 
     fun addLocation(location: Location){
-        locationList.value?.add(location)
-        addLocations(locationList.value!!)
+        locationsList.add(location)
+        _locations.value  = locationsList
     }
 
-    fun addCoordinates(coordinates: Coordinates){
-        coordinateList.value?.add(coordinates)
-    }
-
-    fun addCoordinates(coordinates: List<Coordinates>) {
-        if (coordinates.isNotEmpty()) {
-            coordinateList.value?.addAll(coordinates)
-        }
-    }
-
-    fun getCoordinatesList() = coordinateList
-
-    fun getLocations() = locationList
 }

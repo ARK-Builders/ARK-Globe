@@ -65,7 +65,7 @@ class MainActivity: AppCompatActivity() {
 
         supportFragmentManager.onArkPathPicked(this) {
             val globePrefs = GlobePreferences.getInstance(this)
-            globePrefs.storePath("$it${Settings.FOLDER_NAME}")
+            globePrefs.storePath("$it")
         }
     }
 

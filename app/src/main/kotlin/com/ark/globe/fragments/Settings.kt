@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.ark.globe.R
 import com.ark.globe.filehandling.FilePicker
+import com.ark.globe.fragments.locations.LocationsViewModel
 import com.ark.globe.fragments.ui.PathPreference
+import com.ark.globe.jsonprocess.JSONFile
 import com.ark.globe.preferences.GlobePreferences
 import space.taran.arkfilepicker.onArkPathPicked
 
@@ -17,6 +20,8 @@ class Settings : PreferenceFragmentCompat() {
     private val activity: AppCompatActivity by lazy {
         requireActivity() as AppCompatActivity
     }
+
+    private val lViewModel: LocationsViewModel by activityViewModels()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         activity.title = getString(R.string.settings)
@@ -49,13 +54,13 @@ class Settings : PreferenceFragmentCompat() {
 
         parentFragmentManager.onArkPathPicked(viewLifecycleOwner) {
             val globePrefs = GlobePreferences.getInstance(requireContext())
-            globePrefs.storePath("$it$FOLDER_NAME")
+            globePrefs.storePath("$it")
+            lViewModel.addLocations(JSONFile.readJsonLocations(requireContext()))
             pathPref?.setPath(globePrefs.getPath())
         }
     }
 
     companion object{
         const val TAG = "Settings"
-        const val FOLDER_NAME = "/My Locations"
     }
 }

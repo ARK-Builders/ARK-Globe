@@ -1,6 +1,10 @@
 package com.ark.globe.jsonprocess
 
 import android.content.Context
+import android.widget.Toast
+import com.ark.globe.R
+import com.ark.globe.coordinates.Location
+import com.ark.globe.coordinates.Locations
 import com.ark.globe.preferences.GlobePreferences
 import java.io.*
 import java.nio.file.Files
@@ -12,7 +16,7 @@ class JSONFile {
         private const val JSON_EXT = "json"
         private const val FILE_NAME = "Location "
 
-        fun createJsonFile(path: Path?, jsonString: String){
+        private fun createJsonFile(path: Path?, jsonString: String){
             var numberOfFiles = 0
             if(path != null) {
                 Files.list(path).forEach {
@@ -37,17 +41,46 @@ class JSONFile {
             }
         }
 
-        fun readJsonFile(path: Path?) {
+        fun saveLocation(context: Context, location: Location?){
+            if (location != null) {
+                val path = getPath(context)
+                if (path != null) {
+                    createJsonFile(
+                        path,
+                        JSONParser.parseLocationToJSON(location)
+                    )
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.location_saved), Toast.LENGTH_SHORT
+                    ).show()
+                } else
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.select_folder),
+                        Toast.LENGTH_SHORT
+                    ).show()
+            }
+        }
+
+        fun readJsonLocations(context: Context):List<Location> {
             var numberOfFiles = 0
+            val locations = mutableListOf<Location>()
+            val path = getPath(context)
             if (path != null) {
-                Files.list(path). forEach{
-                    if(it.fileName.extension == JSON_EXT) {
+                Files.list(path). forEach{ filePath ->
+                    if(filePath.fileName.extension == JSON_EXT) {
                         try {
-                            val jsonFile = it.toFile()
+                            val jsonFile = filePath.toFile()
                             val fileReader = FileReader(jsonFile)
                             val bufferedReader = BufferedReader(fileReader)
+                            val jsonLocation = StringBuilder()
                             with(bufferedReader) {
-                                println("${readText()} ${numberOfFiles++}")
+                                forEachLine {
+                                    jsonLocation.append(it)
+                                    println("Line: $it")
+                                }
+                                locations.add(JSONParser.parseFromJsonToLocation(jsonLocation.toString()))
+                                println("File ${numberOfFiles++} Contents: $jsonLocation")
                                 close()
                             }
                         } catch (e: Exception) {
@@ -56,9 +89,10 @@ class JSONFile {
                     }
                 }
             }
+            return locations
         }
 
-        fun getPath(context: Context):Path?{
+        private fun getPath(context: Context):Path?{
             val prefs = GlobePreferences.getInstance(context)
             val pathString = prefs.getPath()
             var path: Path? = null
