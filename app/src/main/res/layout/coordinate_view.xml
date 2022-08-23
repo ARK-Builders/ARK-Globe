@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
@@ -28,9 +28,9 @@
             android:id="@+id/locationDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
+            android:padding="5dp"
             android:text="@string/location_desc" />
 
         <TextView
@@ -39,12 +39,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_weight="1"
+            android:drawablePadding="10dp"
+            android:gravity="start"
+            android:padding="5dp"
             android:text="@string/coordinates"
             android:textSize="16sp"
-            app:drawableStartCompat="@drawable/location"
-            android:padding="5dp"
-            android:drawablePadding="10dp"
-            android:gravity="start"/>
+            app:drawableStartCompat="@drawable/location" />
 
     </LinearLayout>
 

@@ -1,10 +1,8 @@
 package com.ark.globe.jsonprocess
 
 import android.content.Context
-import android.widget.Toast
-import com.ark.globe.R
+import android.util.Log
 import com.ark.globe.coordinates.Location
-import com.ark.globe.coordinates.Locations
 import com.ark.globe.preferences.GlobePreferences
 import java.io.*
 import java.nio.file.Files
@@ -49,16 +47,7 @@ class JSONFile {
                         path,
                         JSONParser.parseLocationToJSON(location)
                     )
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.location_saved), Toast.LENGTH_SHORT
-                    ).show()
-                } else
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.select_folder),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                }
             }
         }
 
@@ -77,10 +66,9 @@ class JSONFile {
                             with(bufferedReader) {
                                 forEachLine {
                                     jsonLocation.append(it)
-                                    println("Line: $it")
                                 }
                                 locations.add(JSONParser.parseFromJsonToLocation(jsonLocation.toString()))
-                                println("File ${numberOfFiles++} Contents: $jsonLocation")
+                                Log.d("File ${numberOfFiles++}:",  jsonLocation.toString())
                                 close()
                             }
                         } catch (e: Exception) {

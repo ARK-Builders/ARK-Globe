@@ -19,10 +19,7 @@ import com.ark.globe.R
 import com.ark.globe.adapters.LocationsAdapter
 import com.ark.globe.coordinates.Coordinates
 import com.ark.globe.coordinates.Location
-import com.ark.globe.coordinates.URLParser
-import com.ark.globe.databinding.LocationsFragmentBinding
-import com.ark.globe.jsonprocess.JSONFile
-import kotlinx.coroutines.runBlocking
+import com.ark.globe.repositories.Repository
 
 class LocationsFragment: Fragment() {
 
@@ -35,19 +32,12 @@ class LocationsFragment: Fragment() {
     private var longitude: EditText? = null
     private var latitude: EditText? = null
 
-    private lateinit var binding: LocationsFragmentBinding
-
     private val urlChangeListener = object : TextWatcher {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             if (s != null && s.isNotEmpty()) {
-
-                val coordinates = runBlocking{
-                    URLParser.extractCoordinates(s.toString())
+                lViewModel.extractCoordinates(s.toString()){
+                    updateCoordinates(it)
                 }
-
-                lViewModel.writeCoordinates(coordinates)
-
-                onCoordinatesChanged()
             }
         }
 
@@ -64,8 +54,8 @@ class LocationsFragment: Fragment() {
         savedInstanceState: Bundle?): View {
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         activity.title = getString(R.string.app_name)
-        binding = LocationsFragmentBinding.inflate(layoutInflater)
-        return inflater.inflate(R.layout.locations_fragment, container, false)
+        lViewModel.repository = Repository()
+        return inflater.inflate(R.layout.location_input, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,15 +69,7 @@ class LocationsFragment: Fragment() {
         longitude = view.findViewById(R.id.longitude)
         latitude = view.findViewById(R.id.latitude)
 
-        urlText.addTextChangedListener(urlChangeListener)
-
-        if(intent != null) {
-            val data = intent?.getStringExtra(Intent.EXTRA_TEXT)
-            urlText.setText(URLParser.getValidURL(data))
-        }
-
         lViewModel.apply {
-            addLocations(JSONFile.readJsonLocations(requireContext()))
             locations.observe(viewLifecycleOwner) {
                 adapter = LocationsAdapter(it)
                 recyclerView.apply {
@@ -95,6 +77,14 @@ class LocationsFragment: Fragment() {
                     this.adapter = this@LocationsFragment.adapter
                 }
             }
+            readJsonLocations(requireContext())
+        }
+
+        urlText.addTextChangedListener(urlChangeListener)
+
+        if(intent != null) {
+            val data = intent?.getStringExtra(Intent.EXTRA_TEXT)
+            urlText.setText(lViewModel.getValidUrl(data))
         }
 
         addButton.setOnClickListener {
@@ -111,7 +101,7 @@ class LocationsFragment: Fragment() {
                         )
                         val location = Location(mName, mDescription, coordinates)
 
-                        JSONFile.saveLocation(requireContext(), location)
+                        lViewModel.saveLocation(requireContext(), location)
 
                         lViewModel.addLocation(location)
 
@@ -129,54 +119,18 @@ class LocationsFragment: Fragment() {
                 } else coordinateError(getString(R.string._latitude))
             } else descriptionError(getString(R.string._location_name))
         }
-
-        /*saveButton.setOnClickListener{
-            with(lViewModel) {
-                var locations: Locations? = null
-                getLocations().observe(viewLifecycleOwner) { it1 ->
-                    if (it1.isNotEmpty()) {
-                        locations = Locations(it1)
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.no_locations), Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-                if (locations != null) {
-                    val path = JSONFile.getPath(requireContext())
-                    if (path != null) {
-                        JSONFile.createJsonFile(
-                            path,
-                            JSONParser.parseLocationsToJSON(locations!!)
-                        )
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.location_saved), Toast.LENGTH_SHORT
-                        ).show()
-                    } else
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.select_folder),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                }
-            }
-        }*/
     }
 
-    private fun onCoordinatesChanged(){
-        lViewModel.coordinates.observe(viewLifecycleOwner) {
-            if (it != null) {
-                latitude?.setText(it.latitude.toString())
-                longitude?.setText(it.longitude.toString())
-            }
-            else{
-                latitude?.text = null
-                longitude?.text = null
-            }
+    private fun updateCoordinates(coordinates: Coordinates?){
+        if (coordinates != null) {
+            latitude?.setText(coordinates.latitude.toString())
+            longitude?.setText(coordinates.longitude.toString())
         }
-}
+        else{
+            latitude?.text = null
+            longitude?.text = null
+        }
+    }
 
     private fun coordinateError(missingValue: String){
         Toast.makeText(requireContext(), getString(R.string.coordinate_error, missingValue), Toast.LENGTH_SHORT).show()

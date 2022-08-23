@@ -55,7 +55,7 @@ class Settings : PreferenceFragmentCompat() {
         parentFragmentManager.onArkPathPicked(viewLifecycleOwner) {
             val globePrefs = GlobePreferences.getInstance(requireContext())
             globePrefs.storePath("$it")
-            lViewModel.addLocations(JSONFile.readJsonLocations(requireContext()))
+            lViewModel.readJsonLocations(requireContext())
             pathPref?.setPath(globePrefs.getPath())
         }
     }

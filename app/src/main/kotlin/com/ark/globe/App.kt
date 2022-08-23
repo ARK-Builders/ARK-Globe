@@ -2,12 +2,14 @@ package com.ark.globe
 
 import android.app.Application
 import android.content.Context
+import dagger.hilt.android.HiltAndroidApp
 import org.acra.config.dialog
 import org.acra.config.httpSender
 import org.acra.data.StringFormat
 import org.acra.ktx.initAcra
 import org.acra.sender.HttpSender
 
+@HiltAndroidApp
 class App: Application() {
 
     override fun attachBaseContext(baseContext: Context){
