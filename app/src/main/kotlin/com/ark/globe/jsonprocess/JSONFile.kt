@@ -51,7 +51,7 @@ class JSONFile {
             }
         }
 
-        fun readJsonLocations(context: Context):List<Location> {
+        fun readJsonLocations(context: Context):List<Location>{
             var numberOfFiles = 0
             val locations = mutableListOf<Location>()
             val path = getPath(context)
@@ -68,7 +68,8 @@ class JSONFile {
                                     jsonLocation.append(it)
                                 }
                                 locations.add(JSONParser.parseFromJsonToLocation(jsonLocation.toString()))
-                                Log.d("File ${numberOfFiles++}:",  jsonLocation.toString())
+                                numberOfFiles += 1
+                                Log.d("File ${numberOfFiles}:",  jsonLocation.toString())
                                 close()
                             }
                         } catch (e: Exception) {

@@ -152,8 +152,6 @@ class Repository {
             val coords = coordinatesString.split(DELIMITER_2)
             latitude = coords[0]
             longitude = coords[1]
-            println("Start: $coordinatesString")
-            println("Latitude: $latitude Longitude: $longitude")
             true
         }
         else false
