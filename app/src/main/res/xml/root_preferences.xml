@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="@string/your_locations">
+        <com.ark.globe.fragments.ui.PathPreference
+            android:key="@string/path_pref_key"
+            android:layout="@layout/path_pref"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/appearance">
+
+        <SwitchPreferenceCompat
+            app:key="@string/dark_mode_pref_key"
+            app:title="@string/dark_mode"
+            android:defaultValue="false"
+            android:persistent="true"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

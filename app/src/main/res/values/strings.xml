@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ARK Globe</string>
+    <string name="settings">Settings</string>
+    <string name="longitude">Longitude</string>
+    <string name="latitude">Latitude</string>
+    <string name="_longitude">longitude</string>
+    <string name="_latitude">latitude</string>
+    <string name="save">Save</string>
+    <string name="add">Add</string>
+    <string name="select">Select</string>
+    <string name="cancel">Cancel</string>
+    <string name="coordinates">Coordinates</string>
+    <string name="coordinate">Coordinate</string>
+    <string name="coordinate_error">Please enter %s value</string>
+    <string name="no_file_access">Save failed, allow ARK Globe to access your files</string>
+    <string name="file_picker_title">Choose folder</string>
+    <string name="location_name">Name</string>
+    <string name="location_desc">Description</string>
+    <string name="locations">Locations</string>
+    <string name="description_error">Please provide location %s</string>
+    <string name="_location_name">name</string>
+    <string name="_location_desc">description</string>
+    <string name="paste_link">Paste Google Maps or OSM link here</string>
+    <string name="location_folder">Choose folder to save locations</string>
+    <string name="path_pref_key">Path</string>
+    <string name="dark_mode_pref_key">Dark mode</string>
+    <string name="your_locations">Your locations</string>
+    <string name="appearance">Appearance</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="no_folder">No folder</string>
+    <string name="select_folder">Please select folder to save locations from settings</string>
+    <string name="no_locations">No locations to save</string>
+    <string name="location_saved">Location(s) saved successfully</string>
+    <string name="crash_dialog_desc">Sorry, the application crashed. Please send a report to the developers.</string>
+    <string name="crash_dialog_title">Crash</string>
+    <string name="crash_dialog_comment">You can add a comment here:</string>
+</resources>
