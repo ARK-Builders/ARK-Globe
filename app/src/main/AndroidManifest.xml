@@ -13,9 +13,8 @@
 
     <application
         android:name="com.ark.globe.App"
-        android:label="@string/app_name"
-        android:icon="@mipmap/ark_globe"
-        android:roundIcon="@mipmap/ark_globe_round"
+        android:icon="${appIcon}"
+        android:label="${appLabel}"
         android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.ARK.Globe">
         <activity
