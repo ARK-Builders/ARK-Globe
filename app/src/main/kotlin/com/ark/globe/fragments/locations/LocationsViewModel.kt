@@ -9,6 +9,7 @@ import com.ark.globe.coordinates.Coordinates
 import com.ark.globe.coordinates.Location
 import com.ark.globe.repositories.Repository
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,10 +18,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class LocationsViewModel: ViewModel() {
+@HiltViewModel
+class LocationsViewModel @Inject constructor(): ViewModel() {
 
     private val iODispatcher = Dispatchers.IO
-    lateinit var repository: Repository
+    @Inject lateinit var repository: Repository
     private val locationsList = mutableListOf<Location>()
 
     private val _locations: MutableLiveData<List<Location>> by lazy {

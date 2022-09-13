@@ -19,13 +19,19 @@ import com.ark.globe.R
 import com.ark.globe.adapters.LocationsAdapter
 import com.ark.globe.coordinates.Coordinates
 import com.ark.globe.coordinates.Location
+import com.ark.globe.databinding.LocationInputBinding
 import com.ark.globe.repositories.Repository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LocationsFragment: Fragment() {
 
     private val activity: AppCompatActivity by lazy{
         requireActivity() as AppCompatActivity
     }
+
+    private var _binding: LocationInputBinding? = null
+    private val binding get() = _binding!!
     private val lViewModel: LocationsViewModel by activityViewModels()
     private var adapter: LocationsAdapter? = null
     private var intent: Intent? = null
@@ -54,20 +60,20 @@ class LocationsFragment: Fragment() {
         savedInstanceState: Bundle?): View {
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         activity.title = getString(R.string.app_name)
-        lViewModel.repository = Repository()
-        return inflater.inflate(R.layout.location_input, container, false)
+        _binding = LocationInputBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val locationName: EditText = view.findViewById(R.id.locationName)
-        val locationDesc: EditText = view.findViewById(R.id.locationDesc)
-        val urlText: EditText = view.findViewById(R.id.urlText)
-        val addButton: Button = view.findViewById(R.id.addButton)
+        val locationName: EditText = binding.locationName
+        val locationDesc: EditText = binding.locationDesc
+        val urlText: EditText = binding.urlText
+        val addButton: Button = binding.addButton
         val layoutManager = LinearLayoutManager(requireContext())
-        val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
-        longitude = view.findViewById(R.id.longitude)
-        latitude = view.findViewById(R.id.latitude)
+        val recyclerView: RecyclerView = binding.include.recyclerView
+        longitude = binding.longitude
+        latitude = binding.latitude
 
         lViewModel.apply {
             locations.observe(viewLifecycleOwner) {

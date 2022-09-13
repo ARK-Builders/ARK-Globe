@@ -18,7 +18,6 @@ import space.taran.arkfilepicker.ArkFilePickerMode
 
 class FilePicker private constructor(){
     companion object{
-
         private const val TAG = "file_picker"
         private var fragmentManager: FragmentManager? = null
         var readPermLauncher: ActivityResultLauncher<String>? = null
