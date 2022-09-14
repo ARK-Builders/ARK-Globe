@@ -13,7 +13,7 @@ import java.io.BufferedReader
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
-class Repository @Inject constructor() {
+class LocationsRepository @Inject constructor() {
     private var coordinatesString = ""
     private var latitude: String? = null
     private var longitude: String? = null

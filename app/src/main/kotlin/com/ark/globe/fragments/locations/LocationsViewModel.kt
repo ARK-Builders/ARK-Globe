@@ -7,13 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ark.globe.coordinates.Coordinates
 import com.ark.globe.coordinates.Location
-import com.ark.globe.repositories.Repository
-import dagger.hilt.android.AndroidEntryPoint
+import com.ark.globe.repositories.LocationsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,7 +18,7 @@ import javax.inject.Inject
 class LocationsViewModel @Inject constructor(): ViewModel() {
 
     private val iODispatcher = Dispatchers.IO
-    @Inject lateinit var repository: Repository
+    @Inject lateinit var locationsRepository: LocationsRepository
     private val locationsList = mutableListOf<Location>()
 
     private val _locations: MutableLiveData<List<Location>> by lazy {
@@ -48,17 +44,17 @@ class LocationsViewModel @Inject constructor(): ViewModel() {
     fun extractCoordinates(url: String?, coordinates: (Coordinates?) -> Unit){
         viewModelScope.launch {
             withContext(iODispatcher){
-                coordinates(repository.extractCoordinates(url))
+                coordinates(locationsRepository.extractCoordinates(url))
             }
         }
     }
 
-    fun getValidUrl(urlStr: String?) = repository.getValidURL(urlStr)
+    fun getValidUrl(urlStr: String?) = locationsRepository.getValidURL(urlStr)
 
     fun saveLocation(context: Context, location: Location){
         viewModelScope.launch {
             withContext(iODispatcher) {
-                repository.saveLocation(context, location)
+                locationsRepository.saveLocation(context, location)
             }
         }
     }
@@ -68,7 +64,7 @@ class LocationsViewModel @Inject constructor(): ViewModel() {
             locationsList.clear()
         viewModelScope.launch {
             withContext(iODispatcher){
-                locationsList.addAll(repository.readJsonLocations(context))
+                locationsList.addAll(locationsRepository.readJsonLocations(context))
             }
         }
         _locations.postValue(locationsList)

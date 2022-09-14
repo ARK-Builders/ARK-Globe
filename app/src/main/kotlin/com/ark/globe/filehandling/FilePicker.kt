@@ -13,8 +13,8 @@ import androidx.fragment.app.FragmentManager
 import com.ark.globe.BuildConfig
 import com.ark.globe.R
 import space.taran.arkfilepicker.ArkFilePickerConfig
-import space.taran.arkfilepicker.ArkFilePickerFragment
-import space.taran.arkfilepicker.ArkFilePickerMode
+import space.taran.arkfilepicker.presentation.filepicker.ArkFilePickerFragment
+import space.taran.arkfilepicker.presentation.filepicker.ArkFilePickerMode
 
 class FilePicker private constructor(){
     companion object{
@@ -35,7 +35,7 @@ class FilePicker private constructor(){
             else askForReadPermissions()
         }
 
-        fun isReadPermissionGranted(activity: AppCompatActivity): Boolean{
+        private fun isReadPermissionGranted(activity: AppCompatActivity): Boolean{
             return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
                 Environment.isExternalStorageManager()
             else{
