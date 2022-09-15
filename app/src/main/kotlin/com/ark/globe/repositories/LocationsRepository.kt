@@ -11,8 +11,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.BufferedReader
 import java.net.HttpURLConnection
+import javax.inject.Inject
 
-class Repository {
+class LocationsRepository @Inject constructor() {
     private var coordinatesString = ""
     private var latitude: String? = null
     private var longitude: String? = null

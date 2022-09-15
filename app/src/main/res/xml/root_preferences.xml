@@ -5,7 +5,7 @@
         <com.ark.globe.fragments.ui.PathPreference
             android:key="@string/path_pref_key"
             android:layout="@layout/path_pref"
-            />
+            android:minHeight="48dp" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/appearance">

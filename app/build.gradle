@@ -75,6 +75,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'androidx.room:room-runtime:2.4.2'
     implementation 'androidx.room:room-ktx:2.4.2'
+
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'com.android.volley:volley:1.2.1'
 
@@ -86,8 +87,11 @@ dependencies {
     implementation 'ch.acra:acra-http:5.9.5'
     implementation 'ch.acra:acra-dialog:5.9.5'
 
-    implementation "com.google.dagger:hilt-android:2.38.1"
-    kapt "com.google.dagger:hilt-compiler:2.38.1"
+    implementation "com.google.dagger:hilt-android:2.42"
+    kapt "com.google.dagger:hilt-compiler:2.42"
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
+
+    implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.6'
 
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.github.ark-builders:ark-filepicker:main-SNAPSHOT'

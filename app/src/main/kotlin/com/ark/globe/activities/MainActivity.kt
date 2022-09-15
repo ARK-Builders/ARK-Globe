@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.ark.globe.R
 import com.ark.globe.contracts.PermissionContract
 import com.ark.globe.databinding.ActivityMainBinding
@@ -12,17 +13,19 @@ import com.ark.globe.filehandling.FilePicker
 import com.ark.globe.fragments.Settings
 import com.ark.globe.fragments.locations.LocationsFragment
 import com.ark.globe.preferences.GlobePreferences
-import space.taran.arkfilepicker.onArkPathPicked
+import dagger.hilt.android.AndroidEntryPoint
+import space.taran.arkfilepicker.presentation.onArkPathPicked
 
-class MainActivity: AppCompatActivity() {
+@AndroidEntryPoint
+class MainActivity: AppCompatActivity(R.layout.activity_main) {
 
-    private lateinit var binding: ActivityMainBinding
+    private val binding by viewBinding(ActivityMainBinding::bind)
     private val locationsFragment = LocationsFragment()
     private val settingsFragment = Settings()
 
     init{
-        FilePicker.readPermLauncher_SDK_R = registerForActivityResult(PermissionContract()){
-            if(FilePicker.isReadPermissionGranted(this))
+        FilePicker.readPermLauncher_SDK_R = registerForActivityResult(PermissionContract()){ isGranted ->
+            if(isGranted)
                 FilePicker.show()
             else{
                 FilePicker.permissionDeniedError(this)
@@ -44,8 +47,6 @@ class MainActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         delegate.localNightMode = GlobePreferences.getInstance(this).getNightMode()
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         binding.toolbar.setNavigationOnClickListener{
             onBackPressed()

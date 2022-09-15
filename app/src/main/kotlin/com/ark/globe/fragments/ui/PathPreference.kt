@@ -6,9 +6,8 @@ import android.widget.TextView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.ark.globe.R
+import com.ark.globe.databinding.PathPrefBinding
 import com.ark.globe.preferences.GlobePreferences
-import java.io.File
-import java.nio.file.Path
 
 class PathPreference(context: Context, attrs: AttributeSet): Preference(context, attrs) {
     private var path: TextView? = null

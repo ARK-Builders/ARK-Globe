@@ -4,9 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -15,17 +13,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.ark.globe.R
 import com.ark.globe.adapters.LocationsAdapter
 import com.ark.globe.coordinates.Coordinates
 import com.ark.globe.coordinates.Location
-import com.ark.globe.repositories.Repository
+import com.ark.globe.databinding.FragmentLocationsBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-class LocationsFragment: Fragment() {
+@AndroidEntryPoint
+class LocationsFragment: Fragment(R.layout.fragment_locations) {
 
     private val activity: AppCompatActivity by lazy{
         requireActivity() as AppCompatActivity
     }
+    private val binding by viewBinding(FragmentLocationsBinding::bind)
     private val lViewModel: LocationsViewModel by activityViewModels()
     private var adapter: LocationsAdapter? = null
     private var intent: Intent? = null
@@ -50,24 +52,18 @@ class LocationsFragment: Fragment() {
         this.intent = intent
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View {
-        activity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        activity.title = getString(R.string.app_name)
-        lViewModel.repository = Repository()
-        return inflater.inflate(R.layout.location_input, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val locationName: EditText = view.findViewById(R.id.locationName)
-        val locationDesc: EditText = view.findViewById(R.id.locationDesc)
-        val urlText: EditText = view.findViewById(R.id.urlText)
-        val addButton: Button = view.findViewById(R.id.addButton)
+        val locationName: EditText = binding.locationName
+        val locationDesc: EditText = binding.locationDesc
+        val urlText: EditText = binding.urlText
+        val addButton: Button = binding.addButton
         val layoutManager = LinearLayoutManager(requireContext())
-        val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
-        longitude = view.findViewById(R.id.longitude)
-        latitude = view.findViewById(R.id.latitude)
+        val recyclerView: RecyclerView = binding.include.recyclerView
+        activity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        activity.title = getString(R.string.app_name)
+        longitude = binding.longitude
+        latitude = binding.latitude
 
         lViewModel.apply {
             locations.observe(viewLifecycleOwner) {

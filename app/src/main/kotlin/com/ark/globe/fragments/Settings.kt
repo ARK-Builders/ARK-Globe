@@ -11,9 +11,8 @@ import com.ark.globe.R
 import com.ark.globe.filehandling.FilePicker
 import com.ark.globe.fragments.locations.LocationsViewModel
 import com.ark.globe.fragments.ui.PathPreference
-import com.ark.globe.jsonprocess.JSONFile
 import com.ark.globe.preferences.GlobePreferences
-import space.taran.arkfilepicker.onArkPathPicked
+import space.taran.arkfilepicker.presentation.onArkPathPicked
 
 class Settings : PreferenceFragmentCompat() {
 
