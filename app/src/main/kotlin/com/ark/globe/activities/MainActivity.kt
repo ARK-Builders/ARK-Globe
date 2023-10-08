@@ -14,7 +14,7 @@ import com.ark.globe.fragments.Settings
 import com.ark.globe.fragments.locations.LocationsFragment
 import com.ark.globe.preferences.GlobePreferences
 import dagger.hilt.android.AndroidEntryPoint
-import space.taran.arkfilepicker.presentation.onArkPathPicked
+import dev.arkbuilders.arkfilepicker.presentation.onArkPathPicked
 
 @AndroidEntryPoint
 class MainActivity: AppCompatActivity(R.layout.activity_main) {

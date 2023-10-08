@@ -12,9 +12,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.ark.globe.BuildConfig
 import com.ark.globe.R
-import space.taran.arkfilepicker.ArkFilePickerConfig
-import space.taran.arkfilepicker.presentation.filepicker.ArkFilePickerFragment
-import space.taran.arkfilepicker.presentation.filepicker.ArkFilePickerMode
+import dev.arkbuilders.arkfilepicker.ArkFilePickerConfig
+import dev.arkbuilders.arkfilepicker.presentation.filepicker.ArkFilePickerFragment
+import dev.arkbuilders.arkfilepicker.presentation.filepicker.ArkFilePickerMode
 
 class FilePicker private constructor(){
     companion object{
