@@ -12,7 +12,7 @@ import com.ark.globe.filehandling.FilePicker
 import com.ark.globe.fragments.locations.LocationsViewModel
 import com.ark.globe.fragments.ui.PathPreference
 import com.ark.globe.preferences.GlobePreferences
-import space.taran.arkfilepicker.presentation.onArkPathPicked
+import dev.arkbuilders.arkfilepicker.presentation.onArkPathPicked
 
 class Settings : PreferenceFragmentCompat() {
 
